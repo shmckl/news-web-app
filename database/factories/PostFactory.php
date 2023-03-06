@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,9 +19,9 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            'post_title' => $this->faker->regexify('[A-Za-z0-9]{20}'),
-            'post_content' => $this->faker->regexify('[A-Za-z0-9]{20}'),
-            'user_id' => 1,
+            'post_title' => $this->faker->regexify('[A-Za-z0-9]{10}'),
+            'post_content' => $this->faker->paragraph,
+            'user_id' => random_int(1,10),
         ];
     }
 }
