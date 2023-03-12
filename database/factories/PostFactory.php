@@ -22,6 +22,9 @@ class PostFactory extends Factory
             'post_title' => $this->faker->regexify('[A-Za-z0-9]{10}'),
             'post_content' => $this->faker->paragraph,
             'user_id' => random_int(1,10),
+
+            //dont hard code numbers, instead:
+            // 'author_id' => fake()->numberBetween(1, \App\Models\User::count())
         ];
     }
 }

@@ -22,6 +22,12 @@ class CommentFactory extends Factory
             'comment_content' => $this->faker->paragraph,
             'user_id' => random_int(1,10),
             'post_id' => random_int(1,10),
+
+            //dont hard code numbers, instead:
+            // 'author_id' => fake()->numberBetween(1, \App\Models\User::count())
+
+            //dont hard code numbers, instead:
+            // 'post_id' => fake()->numberBetween(1, \App\Models\Post::count())
         ];
     }
 }

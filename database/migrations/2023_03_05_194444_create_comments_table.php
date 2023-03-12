@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
+            //turn string into text
             $table->string('comment_content');
             $table->bigInteger('post_id')->unsigned();
 
@@ -21,6 +22,7 @@ return new class extends Migration
 
             $table->bigInteger('user_id')->unsigned();
 
+            //change user id to author id
             $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('cascade')->onUpdate('cascade');
 
