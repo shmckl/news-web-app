@@ -15,19 +15,13 @@
         @foreach ($posts as $post)
             <div class="card mb-4">
                 <div class="card-header">
-                    <h2 class="card-title">{{ $post->post_title }}</h2>
+                    <h2 class="card-title">
+                        <a href="{{ route('post.show', $post) }}">{{ $post->post_title }}</a>
+                    </h2>
                     <h5 class="card-subtitle mb-2 text-muted">By {{ $post->user->name }}</h5>
                 </div>
                 <div class="card-body">
                     <p class="card-text">{{ $post->post_content }}</p>
-                    <p class="font-weight-bold">Comments:</p>
-                    <ul>
-                        @foreach ($post->comments as $comment)
-                            <li>
-                                <strong>{{ $comment->user->name }}</strong>: {{ $comment->comment_content }}
-                            </li>
-                        @endforeach
-                    </ul>
                 </div>
             </div>
         @endforeach
