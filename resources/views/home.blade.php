@@ -7,7 +7,7 @@
         <h1 class="text-center my-4">Latest Posts</h1>
 
         @auth
-            <div class="text-center">
+            <div class="text-center mb-4">
                 <a href="{{ route('newpost') }}" class="btn btn-primary">Create Post</a>
             </div>
         @endauth
