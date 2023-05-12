@@ -24,26 +24,45 @@ class CommentController extends Controller
 }
 
 
-    public function destroy(Request $request)
-    {
-        $comment = Comment::find($request->comment_id);
-        $comment->delete();
-
-        return redirect()->route('post.show')->with('success', 'Comment deleted successfully!');
+    // Change the method signature to include the Comment instance
+public function destroy(Request $request, Comment $comment)
+{
+    if($request->user()->cannot('update', $comment) && !$request->user()->isAdmin()) {
+        abort(403);
     }
 
-    public function update(Request $request)
-    {
-        $request->validate([
-            'comment_content' => 'required',
-        ]);
-
-        $comment = Comment::find($request->comment_id);
-        $comment->comment_content = $request->comment_content;
-        $comment->save();
-
-        return redirect()->route('post.show')->with('success', 'Comment updated successfully!');
+    // Add a check to make sure the user is authorized to delete the comment
+    if ($request->user()->id !== $comment->user_id) {
+        return redirect()->route('post.show', $comment->post)->with('error', 'You are not authorized to delete this comment.');
     }
+
+    $comment->delete();
+
+    return redirect()->route('post.show', $comment->post)->with('success', 'Comment deleted successfully!');
+}
+
+// Change the method signature to include the Comment instance
+public function update(Request $request, Comment $comment)
+{
+    if($request->user()->cannot('update', $comment) && !$request->user()->isAdmin()) {
+        abort(403);
+    }
+
+    $request->validate([
+        'comment_content' => 'required',
+    ]);
+
+    // Add a check to make sure the user is authorized to update the comment
+    if ($request->user()->id !== $comment->user_id) {
+        return redirect()->route('post.show', $comment->post)->with('error', 'You are not authorized to update this comment.');
+    }
+
+    $comment->comment_content = $request->comment_content;
+    $comment->save();
+
+    return redirect()->route('post.show', $comment->post)->with('success', 'Comment updated successfully!');
+}
+
 
     public function edit(Request $request)
     {
@@ -63,7 +82,7 @@ class CommentController extends Controller
 
     public function index()
     {
-        return view('welcome', [
+        return view('home', [
             'comments' => Comment::latest()->get(),
         ]);
     }

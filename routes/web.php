@@ -1,9 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CommentController;
 use App\Models\Post;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [PostController::class, 'index'])->name('welcome');
+Route::get('/', [PostController::class, 'index'])->name('home');
 
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('post.show');
 
@@ -32,8 +30,12 @@ Route::get('/newpost', function () {
 })->middleware(['auth', 'verified'])->name('newpost');
 
 Route::post('/newpost', [PostController::class, 'store'])->middleware(['auth', 'verified'])->name('posts.store');
+Route::put('/posts/{post}', [PostController::class, 'update'])->middleware(['auth', 'verified'])->name('post.update');
+Route::delete('/posts/{post}', [PostController::class, 'destroy'])->middleware(['auth', 'verified'])->name('post.destroy');
 
 Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->middleware(['auth', 'verified'])->name('comment.store');
+Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comment.update');
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
 
 Route::get('/posts/{post}/edit', function (Post $post) {
     return view('editpost', [
@@ -51,4 +53,4 @@ require __DIR__.'/auth.php';
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
