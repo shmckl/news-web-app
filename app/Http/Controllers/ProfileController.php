@@ -13,8 +13,11 @@ class ProfileController extends Controller
 {
     public function show(Request $request, User $user)
     {
+        $sortedPosts = $user->posts->sortByDesc('created_at');
+
         return view('profile', [
             'user' => $user,
+            'posts' => $sortedPosts,
         ]);
     }
 

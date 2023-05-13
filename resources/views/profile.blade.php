@@ -7,12 +7,15 @@
         <h1 class="text-center my-4">{{ $user->name }}'s Profile</h1>
 
         <h2>Posts</h2>
-        @foreach ($user->posts as $post)
+        @foreach ($posts as $post)
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="card-title">
                         <a href="{{ route('post.show', $post) }}">{{ $post->post_title }}</a>
                     </h5>
+                    @if($post->post_image)
+                        <img src="{{ asset('images/'.$post->post_image) }}" alt="{{ $post->post_title }}" style="max-width:50%;max-height:500px;">
+                    @endif
                     <p class="card-text">{{ $post->post_content }}</p>
                     <p>Posted on {{ $post->created_at->format('F j, Y') }}</p>
                 </div>

@@ -6,6 +6,10 @@
     <div class="container">
         <h1 class="text-center my-4">{{ $post->post_title }}</h1>
 
+        @if($post->post_image)
+        <img src="{{ asset('images/' . $post->post_image) }}" alt="{{ $post->post_title }}" class="img-fluid">
+        @endif
+
         <div class="card mb-4">
             <div class="card-header">
                 <h5 class="card-subtitle mb-2 text-muted">By 

@@ -19,16 +19,25 @@ class PostController extends Controller
         $request->validate([
             'post_title' => 'required',
             'post_content' => 'required',
+            'post_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $post = new Post();
         $post->post_title = $request->post_title;
         $post->post_content = $request->post_content;
         $post->user_id = $request->user()->id;
+
+        if($request->hasFile('post_image')){
+            $imageName = time().'.'.$request->post_image->extension();  
+            $request->post_image->move(public_path('images'), $imageName);
+            $post->post_image = $imageName;
+        }
+
         $post->save();
 
         return redirect()->route('home')->with('success', 'Post created successfully!');
     }
+
 
     public function index()
     {
@@ -51,10 +60,16 @@ class PostController extends Controller
     $request->validate([
         'post_title' => 'required',
         'post_content' => 'required',
+        'post_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
     ]);
 
     $post->post_title = $request->post_title;
     $post->post_content = $request->post_content;
+    if($request->hasFile('post_image')){
+        $imageName = time().'.'.$request->post_image->extension();  
+        $request->post_image->move(public_path('images'), $imageName);
+        $post->post_image = $imageName;
+    }
     $post->save();
 
     return redirect()->route('post.show', $post)->with('success', 'Post updated successfully!');
