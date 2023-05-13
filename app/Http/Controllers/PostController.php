@@ -39,18 +39,19 @@ class PostController extends Controller
 
     public function update(Request $request, Post $post)
 {
-    if($request->user()->cannot('update', $post) && !$request->user()->isAdmin()) {
+    if ($request->user()->cannot('update', $post) && !$request->user()->isAdmin()) {
         abort(403);
+    }
+
+    // Allow admin user to bypass the authorization check
+    if (!$request->user()->isAdmin() && $request->user()->id !== $post->user_id) {
+        return redirect()->route('post.show', $post)->with('error', 'You are not authorized to update this post.');
     }
 
     $request->validate([
         'post_title' => 'required',
         'post_content' => 'required',
     ]);
-
-    if ($request->user()->id !== $post->user_id) {
-        return redirect()->route('post.show', $post)->with('error', 'You are not authorized to update this post.');
-    }
 
     $post->post_title = $request->post_title;
     $post->post_content = $request->post_content;
@@ -61,11 +62,12 @@ class PostController extends Controller
 
 public function destroy(Request $request, Post $post)
 {
-    if($request->user()->cannot('update', $post) && !$request->user()->isAdmin()) {
+    if ($request->user()->cannot('update', $post) && !$request->user()->isAdmin()) {
         abort(403);
     }
 
-    if ($request->user()->id !== $post->user_id) {
+    // Allow admin user to bypass the authorization check
+    if (!$request->user()->isAdmin() && $request->user()->id !== $post->user_id) {
         return redirect()->route('post.show', $post)->with('error', 'You are not authorized to delete this post.');
     }
 

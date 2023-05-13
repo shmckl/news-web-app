@@ -23,11 +23,16 @@
                     @csrf
                     @method('PUT')
                     <div class="form-group mt-2">
-                        <input type="text" name="post_title" class="form-control" value="{{ $post->post_title }}">
-                        <textarea name="post_content" class="form-control" rows="3">{{ $post->post_content }}</textarea>
+                        <input type="text" name="post_title" class="form-control" id="post_title" value="{{ old('post_title', $post->post_title) }}">
+                        <span id="post_title_error" class="text-danger"></span>
+                        <textarea name="post_content" class="form-control" id="post_content" rows="3">{{ old('post_content', $post->post_content) }}</textarea>
+                        <span id="post_content_error" class="text-danger"></span>
                     </div>
                     <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-secondary cancelEditPostButton" data-post-id="{{ $post->id }}">Cancel</button>
+
                 </form>
+
                 <form action="{{ route('post.destroy', $post) }}" method="POST">
                     @csrf
                     @method('DELETE')
@@ -52,10 +57,12 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group mt-2">
-                                    <textarea name="comment_content" class="form-control" rows="3">{{ $comment->comment_content }}</textarea>
+                                <textarea name="comment_content" class="form-control" rows="3" data-comment-id="{{ $comment->id }}">{{ $comment->comment_content }}</textarea>
                                 </div>
                                 <button type="submit" class="btn btn-success">Submit</button>
+                                <button type="button" class="btn btn-secondary cancelEditCommentButton" data-comment-id="{{ $comment->id }}">Cancel</button>
                             </form>
+
                             <form action="{{ route('comment.destroy', $comment) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
@@ -76,26 +83,104 @@
                         <textarea name="comment_content" class="form-control" rows="3"></textarea>
                     </div>
                     <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-secondary" id="cancelNewCommentButton">Cancel</button>
                 </form>
             </div>
         @endauth
     </div>
 
     <script>
+        document.getElementById('commentForm').addEventListener('submit', function(event) {
+            const textarea = this.querySelector('textarea');
+
+            if (!textarea.value.trim()) {
+                event.preventDefault();
+                textarea.classList.add('is-invalid');
+                if (!document.querySelector('#emptyCommentError')) {
+                    const error = document.createElement('div');
+                    error.id = 'emptyCommentError';
+                    error.classList.add('invalid-feedback');
+                    error.textContent = 'Comment content is required.';
+                    textarea.parentNode.appendChild(error);
+                }
+            } else {
+                textarea.classList.remove('is-invalid');
+                const error = document.querySelector('#emptyCommentError');
+                if (error) {
+                    error.remove();
+                }
+            }
+        });
+
         document.getElementById('commentButton').addEventListener('click', function() {
+            const form = document.getElementById('commentForm');
+            form.style.display = 'block';
             this.style.display = 'none';
-            document.getElementById('commentForm').style.display = 'block';
+
+            // Clear the textarea and remove any validation error messages
+            const textarea = form.querySelector('textarea');
+            textarea.value = '';
+            textarea.classList.remove('is-invalid');
+            const error = document.querySelector('#emptyCommentError');
+            if (error) {
+                error.remove();
+            }
         });
 
         document.querySelectorAll('.editCommentButton').forEach(function (button) {
             button.addEventListener('click', function () {
                 const commentId = this.dataset.commentId;
                 const commentForm = document.querySelector(`.editCommentForm[data-comment-id="${commentId}"]`);
+                const commentText = document.getElementById(`commentText-${commentId}`);
+
+                // Set the existing comment content as the textarea value
+                const textarea = commentForm.querySelector('textarea');
+                textarea.value = commentText.textContent.trim();
 
                 commentForm.style.display = 'block';
                 this.style.display = 'none';
             });
         });
+
+        document.querySelectorAll('.cancelEditCommentButton').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const commentId = this.dataset.commentId;
+                const commentForm = document.querySelector(`.editCommentForm[data-comment-id="${commentId}"]`);
+                const editButton = document.querySelector(`.editCommentButton[data-comment-id="${commentId}"]`);
+
+                commentForm.style.display = 'none';
+                editButton.style.display = 'block';
+
+                // Clear validation message
+                const textarea = commentForm.querySelector('textarea');
+                textarea.classList.remove('is-invalid');
+            });
+        });
+
+        document.querySelectorAll('.editCommentForm').forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                const textarea = this.querySelector('textarea');
+
+                if (!textarea.value.trim()) {
+                    event.preventDefault();
+                    textarea.classList.add('is-invalid');
+                    if (!document.querySelector(`#emptyEditCommentError-${textarea.dataset.commentId}`)) {
+                        const error = document.createElement('div');
+                        error.id = `emptyEditCommentError-${textarea.dataset.commentId}`;
+                        error.classList.add('invalid-feedback');
+                        error.textContent = 'Comment content is required.';
+                        textarea.parentNode.appendChild(error);
+                    }
+                } else {
+                    textarea.classList.remove('is-invalid');
+                    const error = document.querySelector(`#emptyEditCommentError-${textarea.dataset.commentId}`);
+                    if (error) {
+                        error.remove();
+                    }
+                }
+            });
+        });
+
 
         document.querySelectorAll('.editPostButton').forEach(function (button) {
         button.addEventListener('click', function () {
@@ -104,6 +189,95 @@
 
             postForm.style.display = 'block';
             this.style.display = 'none';
+        });
+
+        document.querySelectorAll('.cancelPostButton').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const postId = this.closest('.editPostForm').dataset.postId;
+                const postForm = document.querySelector(`.editPostForm[data-post-id="${postId}"]`);
+                const postButton = document.querySelector(`.editPostButton[data-post-id="${postId}"]`);
+
+                postForm.style.display = 'none';
+                postButton.style.display = 'block';
+            });
+        });
+
+        document.querySelectorAll('.cancelCommentButton').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const commentId = this.closest('.editCommentForm').dataset.commentId;
+                const commentForm = document.querySelector(`.editCommentForm[data-comment-id="${commentId}"]`);
+                const commentButton = document.querySelector(`.editCommentButton[data-comment-id="${commentId}"]`);
+
+                commentForm.style.display = 'none';
+                commentButton.style.display = 'block';
+            });
+        });
+
+        document.getElementById('cancelNewCommentButton').addEventListener('click', function() {
+            document.getElementById('commentForm').style.display = 'none';
+            document.getElementById('commentButton').style.display = 'block';
+        });
+
+        document.querySelectorAll('.editPostForm').forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                const postTitle = this.querySelector('input[name="post_title"]');
+                const postContent = this.querySelector('textarea[name="post_content"]');
+
+                if (!postTitle.value.trim()) {
+                    event.preventDefault();
+                    postTitle.classList.add('is-invalid');
+                    if (!document.querySelector('#emptyPostTitleError')) {
+                        const error = document.createElement('div');
+                        error.id = 'emptyPostTitleError';
+                        error.classList.add('invalid-feedback');
+                        error.textContent = 'Post title is required.';
+                        postTitle.parentNode.appendChild(error);
+                    }
+                } else {
+                    postTitle.classList.remove('is-invalid');
+                    const error = document.querySelector('#emptyPostTitleError');
+                    if (error) {
+                        error.remove();
+                    }
+                }
+
+                if (!postContent.value.trim()) {
+                    event.preventDefault();
+                    postContent.classList.add('is-invalid');
+                    if (!document.querySelector('#emptyPostContentError')) {
+                        const error = document.createElement('div');
+                        error.id = 'emptyPostContentError';
+                        error.classList.add('invalid-feedback');
+                        error.textContent = 'Post content is required.';
+                        postContent.parentNode.appendChild(error);
+                    }
+                } else {
+                    postContent.classList.remove('is-invalid');
+                    const error = document.querySelector('#emptyPostContentError');
+                    if (error) {
+                        error.remove();
+                    }
+                }
+            });
+        });
+
+
+        document.querySelectorAll('.cancelEditPostButton').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const postId = this.dataset.postId;
+                const postForm = document.querySelector(`.editPostForm[data-post-id="${postId}"]`);
+                const editPostButton = document.querySelector(`.editPostButton[data-post-id="${postId}"]`);
+
+                // Reset the form fields and remove error messages
+                document.getElementById('post_title').value = '{{ old('post_title', $post->post_title) }}';
+                document.getElementById('post_content').value = '{{ old('post_content', $post->post_content) }}';
+                document.getElementById('post_title_error').textContent = '';
+                document.getElementById('post_content_error').textContent = '';
+
+                // Hide the form and show the "Edit" button
+                postForm.style.display = 'none';
+                editPostButton.style.display = 'block';
+            });
         });
     });
     </script>
