@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('post_title');
+            $table->string('slug')->unique()->after('post_title');
             //turn string into text
             $table->string('post_content');
             $table->bigInteger('user_id')->unsigned();
-
             //author id instead of user id
             $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('cascade')->onUpdate('cascade');

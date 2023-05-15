@@ -26,6 +26,17 @@ class User extends Authenticatable
         return $this->is_admin;
     }
 
+    public function getRouteKeyName()
+    {
+        return 'name';
+    }
+
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

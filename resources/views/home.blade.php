@@ -16,10 +16,10 @@
         <div class="card mb-4">
             <div class="card-header">
                 <h2 class="card-title">
-                    <a href="{{ route('post.show', $post) }}">{{ $post->post_title }}</a>
+                    <a href="{{ route('post.show', $post->slug) }}">{{ $post->post_title }}</a>
                 </h2>
                 <h5 class="card-subtitle mb-2 text-muted">By 
-                    <a href="{{ route('profile.show', $post->user->id) }}">{{ $post->user->name }}</a>
+                    <a href="{{ route('profile.show', $post->user->name) }}">{{ $post->user->name }}</a>
                 </h5>
             </div>
             @if($post->post_image)
@@ -33,7 +33,6 @@
         </div>
     @endforeach
 
-    <!-- Add this line at the end of your posts list -->
     {{ $posts->links('pagination::simple-bootstrap-5') }}
 </div>
 @endsection

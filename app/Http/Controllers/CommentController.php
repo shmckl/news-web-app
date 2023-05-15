@@ -20,18 +20,18 @@ class CommentController extends Controller
     $comment->post_id = $post->id;
     $comment->save();
 
-    return redirect()->route('post.show', $post)->with('success', 'Comment created successfully!');
+    return redirect()->route('post.show', $post->slug)->with('success', 'Comment created successfully!');
 }
 
 public function update(Request $request, Comment $comment)
 {
-    if ($request->user()->cannot('update', $comment) && !$request->user()->isAdmin()) {
+    if ($request->user()->cannot('update', $comment) && !$request->user()->isAdmin() && $request->user()->id !== $comment->user_id) {
         abort(403);
     }
 
     // Allow admin user to bypass the authorization check
     if (!$request->user()->isAdmin() && $request->user()->id !== $comment->user_id) {
-        return redirect()->route('post.show', $comment->post)->with('error', 'You are not authorized to update this comment.');
+        return redirect()->route('post.show', $comment->post->slug)->with('error', 'You are not authorized to update this comment.');
     }
 
     $request->validate([
@@ -41,23 +41,23 @@ public function update(Request $request, Comment $comment)
     $comment->comment_content = $request->comment_content;
     $comment->save();
 
-    return redirect()->route('post.show', $comment->post)->with('success', 'Comment updated successfully!');
+    return redirect()->route('post.show', $comment->post->slug)->with('success', 'Comment updated successfully!');
 }
 
 public function destroy(Request $request, Comment $comment)
 {
-    if ($request->user()->cannot('update', $comment) && !$request->user()->isAdmin()) {
+    if ($request->user()->cannot('update', $comment) && !$request->user()->isAdmin() && $request->user()->id !== $comment->user_id) {
         abort(403);
-    }
+    }    
 
     // Allow admin user to bypass the authorization check
     if (!$request->user()->isAdmin() && $request->user()->id !== $comment->user_id) {
-        return redirect()->route('post.show', $comment->post)->with('error', 'You are not authorized to delete this comment.');
+        return redirect()->route('post.show', $comment->post->slug)->with('error', 'You are not authorized to delete this comment.');
     }
 
     $comment->delete();
 
-    return redirect()->route('post.show', $comment->post)->with('success', 'Comment deleted successfully!');
+    return redirect()->route('post.show', $comment->post->slug)->with('success', 'Comment deleted successfully!');
 }
 
 

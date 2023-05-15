@@ -16,7 +16,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <a href="{{ route('post.show', $post) }}">{{ $post->post_title }}</a>
+                        <a href="{{ route('post.show', $post->slug) }}">{{ $post->post_title }}</a>
                     </h2>
                     <h5 class="card-subtitle mb-2 text-muted">By {{ $post->user->name }}</h5>
                 </div>

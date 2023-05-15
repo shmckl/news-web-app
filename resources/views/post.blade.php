@@ -4,16 +4,18 @@
 
 @section('content')
     <div class="container">
-        <h1 class="text-center my-4">{{ $post->post_title }}</h1>
+        <h1 class="text-left my-4">{{ $post->post_title }}</h1>
 
         @if($post->post_image)
-        <img src="{{ asset('images/' . $post->post_image) }}" alt="{{ $post->post_title }}" class="img-fluid">
+        <div class="card-img-top">
+            <img src="{{ asset('images/'.$post->post_image) }}" alt="{{ $post->post_title }}" style="max-width:100%;max-height:400px;">
+        </div>
         @endif
 
         <div class="card mb-4">
             <div class="card-header">
                 <h5 class="card-subtitle mb-2 text-muted">By 
-                <a href="{{ route('profile.show', $post->user->id) }}">{{ $post->user->name }}</a>
+                <a href="{{ route('profile.show', $post->user->name) }}">{{ $post->user->name }}</a>
                 </h5>
                 <p class="card-text">{{ $post->post_content }}</p>
                 <p>Posted on {{ $post->created_at->format('F j, Y') }}</p>
@@ -48,12 +50,13 @@
         <h3 class="my-4">Comments</h3>
 
         @foreach ($post->comments as $comment)
-            <div class="card mb-2">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="{{ route('profile.show', $comment->user->id) }}">{{ $comment->user->name }}</a>
-                    </h5>
-                    <p class="card-text" id="commentText-{{ $comment->id }}">{{ $comment->comment_content }}</p>
+        <div class="card mb-2">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{{ route('profile.show', $comment->user->name) }}">{{ $comment->user->name }}</a>
+                    <small class="text-muted float-right">{{ $comment->created_at->diffForHumans() }}</small>
+                </h5>
+                <p class="card-text" id="commentText-{{ $comment->id }}">{{ $comment->comment_content }}</p>
                     @auth
                         @if (Auth::user()->id == $comment->user_id || Auth::user()->isAdmin())
                             <button class="btn btn-primary editCommentButton" data-comment-id="{{ $comment->id }}">Edit Comment</button>
