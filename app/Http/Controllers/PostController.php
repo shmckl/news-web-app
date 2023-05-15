@@ -12,6 +12,7 @@ class PostController extends Controller
     {
         return view('post', [
             'post' => $post,
+            'comments' => $post->comments()->latest()->get(),
         ]);
     }
 

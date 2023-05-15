@@ -124,7 +124,6 @@
             form.style.display = 'block';
             this.style.display = 'none';
 
-            // Clear the textarea and remove any validation error messages
             const textarea = form.querySelector('textarea');
             textarea.value = '';
             textarea.classList.remove('is-invalid');
@@ -140,7 +139,6 @@
                 const commentForm = document.querySelector(`.editCommentForm[data-comment-id="${commentId}"]`);
                 const commentText = document.getElementById(`commentText-${commentId}`);
 
-                // Set the existing comment content as the textarea value
                 const textarea = commentForm.querySelector('textarea');
                 textarea.value = commentText.textContent.trim();
 
@@ -158,7 +156,6 @@
                 commentForm.style.display = 'none';
                 editButton.style.display = 'block';
 
-                // Clear validation message
                 const textarea = commentForm.querySelector('textarea');
                 textarea.classList.remove('is-invalid');
             });
@@ -275,13 +272,11 @@
                 const postForm = document.querySelector(`.editPostForm[data-post-id="${postId}"]`);
                 const editPostButton = document.querySelector(`.editPostButton[data-post-id="${postId}"]`);
 
-                // Reset the form fields and remove error messages
                 document.getElementById('post_title').value = '{{ old('post_title', $post->post_title) }}';
                 document.getElementById('post_content').value = '{{ old('post_content', $post->post_content) }}';
                 document.getElementById('post_title_error').textContent = '';
                 document.getElementById('post_content_error').textContent = '';
 
-                // Hide the form and show the "Edit" button
                 postForm.style.display = 'none';
                 editPostButton.style.display = 'block';
             });

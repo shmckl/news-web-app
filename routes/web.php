@@ -62,5 +62,4 @@ Auth::routes();
 
 Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
 
-//route image.upload post controller
 Route::post('/image-upload', [PostController::class, 'imageUploadPost'])->name('image.upload');
