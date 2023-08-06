@@ -1,3 +1,11 @@
+This project utilised SQLite, Bootstrap and Laravel to build a simple blog web app that allows user authentication, posting and commenting.
+
+
+
+https://github.com/shmckl/news-web-app/assets/11645166/c3e6d479-3d30-45b2-b847-0fd225c7599f
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
