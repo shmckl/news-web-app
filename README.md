@@ -1,4 +1,4 @@
-This project utilised SQLite, Bootstrap and Laravel to build a simple blog web app that allows user authentication, posting and commenting.
+This project utilised PHP, HTML, SQLite, Bootstrap and Laravel Framework to build a simple blog web app that allows user authentication, posting and commenting.
 
 
 
