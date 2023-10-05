@@ -1,4 +1,12 @@
-This project utilised PHP, HTML, SQLite, Bootstrap and Laravel Framework to build a simple blog web app that allows user authentication, posting and commenting.
+This project utilised **PHP**, **HTML**, **SQLite**, **Bootstrap** and **Laravel Framework**
+
+A robust blog web app using Laravel and Docker, featuring:
+•	User authentication
+•	Role-based permissions such as posting and commenting
+•	Dynamic content presentation
+•	Image uploads, allowing users to seamlessly associate visuals with their posts and comments.
+
+The development of the app included implementing an MVC architecture, and showcasing one-to-one, one-to-many, and many-to-many relationships while ensuring data integrity and version control.
 
 
 
